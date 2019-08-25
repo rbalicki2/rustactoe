@@ -47,8 +47,8 @@ web-sys = { version = "0.3.22", features = [
 # logging them with `console.error`. This is great for development, but requires
 # all the `std::fmt` and `std::panicking` infrastructure, so it's only enabled
 # in debug mode.
-[target."cfg(debug_assertions)".dependencies]
 console_error_panic_hook = "0.1.5"
+smithy_css = { path = "../smithy_css/crates/smithy_css" }
 
 # These crates are used for running unit tests.
 [dev-dependencies]

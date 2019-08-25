@@ -6,6 +6,7 @@ use web_sys::console;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
+mod app;
 mod game;
 
 fn get_root_element() -> Result<web_sys::Element, JsValue> {
@@ -22,21 +23,14 @@ fn get_root_element() -> Result<web_sys::Element, JsValue> {
 // This is the entry point of your app
 #[wasm_bindgen(start)]
 pub fn start() -> Result<(), JsValue> {
-  // This provides better error messages in debug mode.
-  // It's disabled in release mode so it doesn't bloat up the file size.
-  #[cfg(debug_assertions)]
   console_error_panic_hook::set_once();
 
   let root_element = get_root_element()?;
 
-  let mut board = game::Board::empty();
-  let app = smithy::smd!({ board.render() });
+  let board = game::Board::empty();
+  let app = app::render(board);
 
   smithy::mount(Box::new(app), root_element);
-
-  console::log_1(&JsValue::from_str(
-    "Welcome to Smithy! Head to `src/lib.rs`. Happy hacking!",
-  ));
 
   Ok(())
 }
