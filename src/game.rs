@@ -74,8 +74,4 @@ impl Board {
 
     None
   }
-
-  pub fn next_player(&self) -> Player {
-    Player::X
-  }
 }
