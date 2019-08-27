@@ -16,7 +16,7 @@ where
 
 // math: 26 + 2 + 26 + 2 + 26 = 82
 // outer margin: 9
-smithy_css::static_css!(
+scoped_css::static_css!(
   .board {
     width: 82vmin;
     height: 82vmin;
