@@ -48,7 +48,7 @@ web-sys = { version = "0.3.22", features = [
 # all the `std::fmt` and `std::panicking` infrastructure, so it's only enabled
 # in debug mode.
 console_error_panic_hook = "0.1.5"
-scoped_css = { path = "../scoped_css/crates/scoped_css" }
+scoped_css = "0.0.1"
 
 # These crates are used for running unit tests.
 [dev-dependencies]
