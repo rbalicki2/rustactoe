@@ -43,15 +43,11 @@ smithy_css::static_css!(
     display: flex;
     flex-direction: column;
     justify-content: center;
-    font-family: courier;
     color: #336;
   }
 
   .square_selectable {
     cursor: pointer;
-  }
-
-  .overlay {
   }
 
   .overlay_text {
@@ -67,7 +63,7 @@ smithy_css::static_css!(
 
     color: red;
     font-size: 90px;
-    font-family: courier;
+    cursor: pointer;
   }
 
   .overlay_background {
@@ -78,6 +74,20 @@ smithy_css::static_css!(
     bottom: 0;
     opacity: 0.8;
     background-color: white;
+  }
+
+  .restart {
+    position: fixed;
+    bottom: 5px;
+    right: 5px;
+    padding: 10px 20px;
+    background-color: #AAA;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  body {
+    font-family: courier;
   }
 );
 
@@ -119,5 +129,14 @@ pub fn render<'a>(mut board: Board) -> smithy::types::SmithyComponent<'a> {
         None
       }
     }
+    <div
+      class={css.classes.restart}
+      on_click={|_| {
+        board = Board::empty();
+        current_player = Rc::new(RefCell::new(Player::X));
+      }}
+    >
+      Restart game
+    </div>
   )
 }
