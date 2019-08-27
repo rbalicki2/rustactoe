@@ -18,3 +18,7 @@ rustup override set nightly-1.37.0
 ```
 
 * wasm-bindgen should be installed
+
+## Do it live!
+
+See rustactoe in action at [https://www.smithy.rs/examples/rustactoe/](https://www.smithy.rs/examples/rustactoe/).
