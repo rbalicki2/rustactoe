@@ -1,6 +1,8 @@
 use crate::game::*;
-use std::rc::Rc;
-use std::cell::RefCell;
+use std::{
+  cell::RefCell,
+  rc::Rc,
+};
 
 pub fn clone_and_zip<'a, T, U>(
   iter: impl Iterator<Item = T> + 'a,
@@ -48,6 +50,35 @@ smithy_css::static_css!(
   .square_selectable {
     cursor: pointer;
   }
+
+  .overlay {
+  }
+
+  .overlay_text {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    color: red;
+    font-size: 90px;
+    font-family: courier;
+  }
+
+  .overlay_background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.8;
+    background-color: white;
+  }
 );
 
 pub fn render<'a>(mut board: Board) -> smithy::types::SmithyComponent<'a> {
@@ -68,7 +99,7 @@ pub fn render<'a>(mut board: Board) -> smithy::types::SmithyComponent<'a> {
             smithy::smd!(<div
               class={format!("{} {}", css.classes.square, css.classes.square_selectable)}
               on_click={|_| {
-                *item = Some(current_player.borrow().clone());
+                *item = Some(*current_player.borrow());
                 current_player.borrow_mut().next();
               }}
             />)
@@ -76,5 +107,17 @@ pub fn render<'a>(mut board: Board) -> smithy::types::SmithyComponent<'a> {
         }).collect::<Vec<smithy::types::SmithyComponent>>()
       }
     </div>
+    {
+      if let Some(player) = board.winner() {
+        Some(smithy::smd!(
+          <div class={css.classes.overlay_background} />
+          <div class={css.classes.overlay_text}>
+            Player { player.to_string() }{' '}won!
+          </div>
+        ))
+      } else {
+        None
+      }
+    }
   )
 }

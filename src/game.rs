@@ -1,4 +1,4 @@
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Copy)]
 pub enum Player {
   X,
   O,
@@ -9,7 +9,8 @@ impl std::string::ToString for Player {
     match self {
       Player::X => "X",
       Player::O => "O",
-    }.to_string()
+    }
+    .to_string()
   }
 }
 
@@ -43,17 +44,35 @@ impl Board {
     Board([None, None, None, None, None, None, None, None, None])
   }
 
-  pub fn perform_best_move(&mut self, player: Player) {
-    // for some meaning of "best"
-    for item in self.iter_mut() {
-      match item {
-        None => {
-          *item = Some(player);
-          return;
-        },
-        Some(_) => {},
+  pub fn winner(&self) -> Option<Player> {
+    let inner = self.0;
+    for offset in 0..3 {
+      // columns
+      if inner[offset].is_some()
+        && inner[offset] == inner[offset + 3]
+        && inner[offset] == inner[offset + 6]
+      {
+        return inner[offset];
+      }
+      // rows
+      if inner[offset * 3].is_some()
+        && inner[offset * 3] == inner[offset * 3 + 1]
+        && inner[offset * 3] == inner[offset * 3 + 2]
+      {
+        return inner[offset * 3];
       }
     }
+
+    // diagonals
+    if inner[0].is_some() && inner[0] == inner[4] && inner[0] == inner[8] {
+      return inner[0];
+    }
+
+    if inner[2].is_some() && inner[2] == inner[4] && inner[2] == inner[6] {
+      return inner[2];
+    }
+
+    None
   }
 
   pub fn next_player(&self) -> Player {
