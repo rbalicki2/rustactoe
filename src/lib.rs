@@ -22,14 +22,23 @@ fn get_root_element() -> Result<web_sys::Element, wasm_bindgen::JsValue> {
 // This is the entry point of your app
 #[wasm_bindgen(start)]
 pub fn start() -> Result<(), wasm_bindgen::JsValue> {
+  use smithy::types::Component;
+  use smithy::*;
+  
+  // use smithy_types::core::AsInnerHtml
   console_error_panic_hook::set_once();
 
-  let root_element = get_root_element()?;
+  // let root_element = get_root_element()?;
 
   let board = game::Board::empty();
-  let app = app::render(board);
+  let mut app = app::render(board);
 
-  smithy::mount(Box::new(app), root_element);
+  let node = app.render();
+  let collapsed_node_vec: Vec<smithy::types::CollapsedNode> = node.into();
+
+  web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(&collapsed_node_vec.as_inner_html()));
+
+  // smithy::mount(Box::new(app), root_element);
 
   Ok(())
 }
