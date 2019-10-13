@@ -33,16 +33,70 @@ fn print_to_console(app: &mut smithy::types::SmithyComponent) {
   println!("\n\n----\n\n");
 }
 
-struct Terminal {}
+struct Terminal {
+  nodes: Option<Vec<CollapsedNode>>,
+}
+
+trait AsTerminalText {
+  fn as_terminal_text(&self) -> String;
+}
+
+impl AsTerminalText for Vec<CollapsedNode> {
+  fn as_terminal_text(&self) -> String {
+    self.iter().map(|node| node.as_terminal_text()).collect()
+  }
+}
+
+impl AsTerminalText for CollapsedNode {
+  fn as_terminal_text(&self) -> String {
+    match self {
+      CollapsedNode::Dom(token) => {
+        token.as_terminal_text()
+        // token.as_inner_html()
+      },
+      CollapsedNode::Text(s) => s.to_string(),
+      CollapsedNode::Comment(str_opt) => match str_opt {
+        Some(s) => format!("<!-- {} -->", s),
+        None => "<!-- -->".into(),
+      },
+    }
+  }
+}
+
+impl AsTerminalText for smithy::types::CollapsedHtmlToken {
+  fn as_terminal_text(&self) -> String {
+    let child_str = self
+      .children
+      .iter()
+      .map(|child| child.as_terminal_text())
+      .collect::<String>();
+    if let Some(_) = self.attributes.get("red") {
+      format!(
+        "{}{}{}",
+        termion::color::Fg(termion::color::Red),
+        child_str,
+        termion::style::Reset
+      )
+    } else {
+      child_str
+    }
+    .to_string()
+  }
+}
 
 impl RenderingTarget for Terminal {
-  fn render(&self, nodes: &Vec<CollapsedNode>) {
-    println!("{}", nodes.as_inner_html());
-    println!("----\n\n");
+  fn render(&mut self, nodes: Vec<CollapsedNode>) {
+    print!("{}", termion::clear::All);
+    // println!("{}", nodes.as_inner_html());
+
+    println!("{}", nodes.as_terminal_text());
+
+    // println!("----\n\n");
+    self.nodes = Some(nodes);
   }
 
-  fn apply_diff(&self, nodes: &Vec<CollapsedNode>) {
-    println!("applied diff");
+  fn apply_diff(&mut self, nodes: Vec<CollapsedNode>) {
+    // println!("applied diff");
     self.render(nodes);
   }
 
@@ -62,7 +116,7 @@ pub fn main() {
 
   let mut count = 0;
   let mut app = smithy::smd!(
-    <text on_test={|_| count += 1}>count: <text color="red">{ count }</text></text>
+    <text on_test={|_| count += 1}>count: <text red>{ count }</text></text>
   );
 
   // let node = app.render();
@@ -72,7 +126,7 @@ pub fn main() {
   // println!("{}", collapsed_node_vec.as_inner_html());
   // print_to_console(&mut app);
 
-  let terminal = Terminal {};
+  let terminal = Terminal { nodes: None };
   smithy::mount(Box::new(app), Box::new(terminal));
   // println!("\n\n----\n\n");
 

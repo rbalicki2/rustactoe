@@ -49,6 +49,7 @@ web-sys = { version = "0.3.22", features = [
 # in debug mode.
 console_error_panic_hook = "0.1.5"
 scoped_css = "0.0.1"
+termion = "1.5.3"
 
 # These crates are used for running unit tests.
 [dev-dependencies]
