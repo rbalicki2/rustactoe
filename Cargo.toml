@@ -54,5 +54,5 @@ scoped_css = "0.0.1"
 [dev-dependencies]
 wasm-bindgen-test = "0.2.45"
 futures = "0.1.27"
-js-sys = "0.3.22"
+js-sys = "0.3.45"
 wasm-bindgen-futures = "0.3.22"
